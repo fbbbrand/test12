@@ -11,11 +11,6 @@
             box-sizing: border-box;
         }
         
-        html {
-            font-size: 16px; /* Fixe la taille de base pour les unités rem */
-            overflow-x: hidden;
-        }
-        
         body {
             font-family: 'Poppins', sans-serif;
             margin: 20px auto;
@@ -25,10 +20,8 @@
                 radial-gradient(circle at 75% 75%, rgba(70, 130, 180, 0.1) 0%, transparent 80%);
             padding: 20px;
             color: #333;
-            max-width: 100%;
+            max-width: 100vw;
             overflow-x: hidden;
-            min-height: 100vh;
-            width: 100%;
         }
         
         .container, .tournament-container {
@@ -38,7 +31,7 @@
             box-shadow: 0 8px 20px rgba(70, 130, 180, 0.15);
             overflow: hidden;
             max-width: 900px;
-            width: 900px;
+            width: 100%;
             margin: 0 auto 40px auto;
             border: 1px solid rgba(70, 130, 180, 0.1);
             transition: all 0.3s ease;
@@ -46,64 +39,12 @@
         
         .tournament-container {
             max-width: 1200px;
-            width: 1200px;
             margin: 40px auto;
-        }
-        
-        /* Assurer que ces conteneurs restent centrés si l'écran est plus petit */
-        @media (max-width: 1200px) {
-            .tournament-container {
-                width: 100%;
-            }
-        }
-        
-        @media (max-width: 900px) {
-            .container {
-                width: 100%;
-            }
-        }
-        
-        /* Forcer les dimensions fixes comme dans l'environnement de développement */
-        table {
-            width: 100% !important;
-            table-layout: fixed;
-        }
-        
-        input {
-            box-sizing: border-box !important;
-            height: 38px !important;
-            font-size: 16px !important;
-        }
-        
-        /* Fixe la taille des cellules pour éviter les variations */
-        th, td {
-            width: auto !important;
-            box-sizing: border-box !important;
-        }
-        
-        /* Fixer les dimensions de l'arbre du tournoi */
-        .tournament-bracket {
-            width: 100% !important;
-            min-width: auto !important;
-            overflow-x: visible !important;
-        }
-        
-        .tournament-round {
-            width: 23% !important;
-        }
-        
-        /* Rétablir la hauteur des lignes */
-        tr {
-            height: auto !important;
-        }
-        
-        td {
-            height: 40px !important;
         }
         
         h1 {
             color: #2c5282;
-            font-size: 28px;
+            font-size: 28px !important;
             margin: 0;
             padding: 25px 0;
             text-align: center;
@@ -122,7 +63,7 @@
         table {
             border-collapse: collapse;
             width: 100%;
-            font-size: 14px;
+            font-size: 14px !important;
             table-layout: fixed; /* Force la largeur des colonnes */
             max-width: 100%;
         }
@@ -140,7 +81,7 @@
             text-align: center;
             text-transform: uppercase;
             letter-spacing: 1px;
-            font-size: 16px;
+            font-size: 16px !important;
             position: sticky;
             top: 0;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
@@ -172,7 +113,7 @@
             padding: 8px 10px;
             border: 1px solid #e0e0e0;
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 16px !important;
             transition: all 0.2s ease;
             font-family: 'Poppins', sans-serif;
             height: 38px;
@@ -198,7 +139,7 @@
             margin: 0;
             display: block;
             box-sizing: border-box;
-            height: 26px; /* Hauteur fixe pour éviter le redimensionnement */
+            height: 26px !important; /* Hauteur fixe pour éviter le redimensionnement */
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             line-height: 18px;
@@ -702,7 +643,7 @@
                 <th>Pseudo</th>
                 <th>Slot</th>
                 <th>Gain</th>
-                <th>Multiplicateur</th>
+                <th>Multi</th>
             </tr>
             <script>
                 // Créer 15 lignes au lieu de 25 pour un aspect plus compact
@@ -962,7 +903,7 @@
                     
                     <!-- Demi-finales -->
                     <div class="tournament-round">
-                        <div class="tournament-match" id="semi1" style="margin-top: 75px;">
+                        <div class="tournament-match" id="semi1" style="margin-top: 100px;">
                             <div class="tournament-player" id="semi-player1">
                                 <div class="tournament-player-header">
                                     <span class="tournament-player-name pending-player">À déterminer</span>
@@ -997,7 +938,7 @@
                             </div>
                         </div>
                         
-                        <div class="tournament-match" id="semi2" style="margin-top: 150px;">
+                        <div class="tournament-match" id="semi2" style="margin-top: 175px;">
                             <div class="tournament-player" id="semi-player3">
                                 <div class="tournament-player-header">
                                     <span class="tournament-player-name pending-player">À déterminer</span>
@@ -1035,7 +976,7 @@
                     
                     <!-- Finale -->
                     <div class="tournament-round">
-                        <div class="tournament-match" id="final" style="margin-top: 225px;">
+                        <div class="tournament-match" id="final" style="margin-top: 275px;">
                             <div class="tournament-player" id="final-player1">
                                 <div class="tournament-player-header">
                                     <span class="tournament-player-name pending-player">À déterminer</span>
@@ -1073,7 +1014,7 @@
                     
                     <!-- Vainqueur -->
                     <div class="tournament-round">
-                        <div class="tournament-match winner-match" id="winner" style="margin-top: 275px;">
+                        <div class="tournament-match winner-match" id="winner" style="margin-top: 325px;">
                             <div class="tournament-player tournament-winner" id="tournament-winner">
                                 <div class="tournament-player-header">
                                     <span class="tournament-player-name pending-player">Champion</span><span class="trophy-icon">🏆</span>
