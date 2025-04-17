@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tournoi Pino</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 20px auto;
+            background-color: #f4f7fc;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(70, 130, 180, 0.1) 0%, transparent 80%),
+                radial-gradient(circle at 75% 75%, rgba(70, 130, 180, 0.1) 0%, transparent 80%);
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container, .tournament-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 0;
+            box-shadow: 0 8px 20px rgba(70, 130, 180, 0.15);
+            overflow: hidden;
+            max-width: 900px;
+            margin: 0 auto 40px auto;
+            border: 1px solid rgba(70, 130, 180, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .tournament-container {
+            max-width: 1600px;
+            margin: 40px auto;
+        }
+        
+        h1 {
+            color: #2c5282;
+            font-size: 28px;
+            margin: 0;
+            padding: 25px 0;
+            text-align: center;
+            font-weight: 600;
+            background-image: linear-gradient(to right, rgba(240, 244, 248, 0.8), rgba(240, 244, 248, 0.4), rgba(240, 244, 248, 0.8));
+            border-bottom: 1px solid rgba(70, 130, 180, 0.1);
+        }
+        
+        .tournament-section {
+            padding: 25px;
+            background-color: #fcfdff;
+            border-radius: 8px;
+            box-shadow: inset 0 0 20px rgba(70, 130, 180, 0.05);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+        th {
+            background-color: #2c3e50;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 16px;
+            position: sticky;
+            top: 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            height: auto;
+            padding: 12px 10px;
+            z-index: 10;
+            border-bottom: 3px solid #3498db;
+        }
+        /* Définir les largeurs des colonnes */
+        th:nth-child(1), td:nth-child(1) { width: 35%; } /* Pseudo */
+        th:nth-child(2), td:nth-child(2) { width: 35%; } /* Slot */
+        th:nth-child(3), td:nth-child(3) { width: 15%; } /* Gain */
+        th:nth-child(4), td:nth-child(4) { width: 15%; } /* Multiplicateur */
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        tr:hover {
+            background-color: rgba(70, 130, 180, 0.05);
+            transition: all 0.2s ease;
+        }
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            font-family: 'Poppins', sans-serif;
+            height: 38px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            background-color: white;
+        }
+        /* Style des placeholders avec opacité réduite */
+        ::placeholder {
+            opacity: 0.4;
+            color: #888;
+        }
+        .multi {
+            font-weight: 600;
+            text-align: center;
+            padding: 4px 6px;
+            border-radius: 6px;
+            min-height: 16px;
+            margin: 0;
+            display: block;
+            box-sizing: border-box;
+            height: 26px; /* Hauteur fixe pour éviter le redimensionnement */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            line-height: 18px;
+        }
+        .multi:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .multi-low {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .multi-medium {
+            background-color: #f39c12;
+            color: white;
+        }
+        .multi-good {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .multi-excellent {
+            background-color: #8e44ad;
+            color: white;
+        }
+        .rank-indicator {
+            margin: 0;
+            padding: 15px;
+            background-image: linear-gradient(135deg, #3498db, #2c5282);
+            color: white;
+            text-align: center;
+            font-size: 18px;
+            position: relative;
+            font-weight: 500;
+            box-shadow: 0 3px 10px rgba(44, 82, 130, 0.15);
+        }
+        .rank-indicator::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid #2c5282;
+        }
+        .rank-value {
+            font-weight: 600;
+            font-size: 22px;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            display: inline-block;
+            margin-left: 10px;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 12px;
+            border-radius: 20px;
+        }
+        .highlight {
+            position: relative;
+            background-color: #fff9e0 !important;
+            box-sizing: border-box;
+        }
+        .highlight::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px dashed #f39c12;
+            border-radius: 6px;
+            pointer-events: none;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        td {
+            box-sizing: border-box;
+            height: 40px; /* Hauteur fixe réduite pour toutes les cellules */
+            vertical-align: middle;
+            padding: 6px 15px;
+        }
+        .sort-button {
+            background: linear-gradient(to right, #3498db, #2c5282);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 15px auto;
+            display: block;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 8px rgba(44, 82, 130, 0.2);
+        }
+        .sort-button:hover {
+            background: linear-gradient(to right, #2c5282, #3498db);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(44, 82, 130, 0.3);
+        }
+        .sort-button:active {
+            transform: translateY(0);
+        }
+        
+        /* Styles pour l'arbre de tournoi */
+        .tournament-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.07);
+            overflow: hidden;
+            max-width: 1600px;
+            margin: 40px auto;
+        }
+        .tournament-section {
+            padding: 25px 25px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+        }
+        .tournament-title {
+            text-align: center;
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .tournament-tree {
+            display: flex;
+            flex-direction: column;
+            max-width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+        .tournament-phases {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #f0f4f8, #e6eef7, #f0f4f8);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(44, 82, 130, 0.1);
+        }
+        .tournament-phase {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 15px;
+            font-weight: 500;
+            color: #2c5282;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .tournament-phase:hover {
+            background-color: rgba(70, 130, 180, 0.1);
+        }
+        .tournament-bracket {
+            display: flex;
+            justify-content: space-between;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+        }
+        .tournament-round {
+            display: flex;
+            flex-direction: column;
+            width: 23%;
+            position: relative;
+        }
+        .tournament-matches {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .tournament-match-group {
+            display: flex;
+            flex-direction: column;
+            width: calc(50% - 8px);
+            margin-bottom: 20px;
+        }
+        .tournament-match {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(44, 82, 130, 0.1);
+            position: relative;
+            z-index: 2;
+            width: 95%;
+            border: 1px solid rgba(70, 130, 180, 0.1);
+            transition: all 0.3s ease;
+        }
+        .tournament-match:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(44, 82, 130, 0.15);
+            border-color: rgba(70, 130, 180, 0.2);
+        }
+        .tournament-match.winner-match {
+            border: 2px solid #2ecc71;
+            background-color: #f7fdfb;
+            width: 200px;
+            margin: 20px auto;
+            padding: 15px;
+            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.15);
+        }
+        /* Connexions entre matchs */
+        .tournament-connector {
+            display: none; /* Masquer les connecteurs problématiques */
+        }
+        .connector-horizontal {
+            height: 2px;
+            background-color: #ccc;
+        }
+        .connector-vertical {
+            width: 2px;
+            background-color: #ccc;
+        }
+        .tournament-player {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .tournament-player:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .tournament-player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .tournament-player-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+        }
+        .tournament-multi {
+            font-weight: 600;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 20px;
+            min-width: 35px;
+            text-align: center;
+            color: white;
+        }
+        .tournament-player-details {
+            display: flex;
+            gap: 8px;
+        }
+        .tournament-slot, .tournament-gain {
+            display: flex;
+            align-items: center;
+        }
+        .tournament-slot {
+            flex: 2;
+        }
+        .tournament-gain {
+            flex: 1;
+        }
+        .tournament-label {
+            display: none;
+        }
+        .tournament-input {
+            flex: 1;
+            padding: 3px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            height: 28px;
+        }
+        .tournament-winner {
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+        .update-bracket-button {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white;
+            border: none;
+            padding: 14px 5px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 15px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.25);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            flex: 1;
+            width: 50%;
+            min-width: 0;
+            white-space: nowrap;
+            text-align: center;
+        }
+        .update-bracket-button:hover {
+            background: linear-gradient(to right, #27ae60, #2ecc71);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(46, 204, 113, 0.3);
+        }
+        .calculate-match-button {
+            display: none;
+        }
+        .match-actions {
+            display: none;
+        }
+        .pending-player {
+            color: #999;
+            font-style: italic;
+        }
+        /* Style pour aligner le bouton calculer à droite */
+        .match-actions {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
+            margin-top: 5px;
+        }
+        .match-actions .calculate-match-button {
+            width: auto;
+        }
+        /* Style pour les placeholders */
+        .tournament-input::placeholder {
+            font-size: 13px;
+            opacity: 0.6;
+        }
+        .trophy-icon {
+            display: inline-block;
+            color: #f1c40f;
+            margin-left: 5px;
+            font-size: 18px;
+            filter: drop-shadow(0 0 2px rgba(241, 196, 15, 0.5));
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .update-bracket-button, .reset-button {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white;
+            border: none;
+            padding: 14px 5px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 15px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.25);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            flex: 1;
+            width: 50%;
+            min-width: 0;
+            white-space: nowrap;
+            text-align: center;
+        }
+        
+        .reset-button {
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.25);
+        }
+        
+        .update-bracket-button:hover {
+            background: linear-gradient(to right, #27ae60, #2ecc71);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(46, 204, 113, 0.3);
+        }
+        
+        .reset-button:hover {
+            background: linear-gradient(to right, #c0392b, #e74c3c);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(231, 76, 60, 0.3);
+        }
+        
+        /* Style pour les suggestions de la datalist */
+        input.pseudo {
+            transition: all 0.3s ease;
+        }
+        
+        input.pseudo:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        /* Style pour les options de la datalist dans les navigateurs qui le supportent */
+        option {
+            font-family: 'Poppins', sans-serif;
+            padding: 8px;
+        }
+        
+        /* Style pour les noms de joueurs éditables */
+        .tournament-player-name[contenteditable="true"] {
+            padding: 2px 6px;
+            border: 1px dashed transparent;
+            border-radius: 4px;
+            cursor: text;
+            transition: all 0.2s ease;
+            min-width: 100px;
+            display: inline-block;
+        }
+        
+        .tournament-player-name[contenteditable="true"]:hover {
+            border-color: rgba(52, 152, 219, 0.3);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .tournament-player-name[contenteditable="true"]:focus {
+            outline: none;
+            border-color: rgba(52, 152, 219, 0.8);
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .tournament-player-name.pending-player[contenteditable="true"] {
+            font-style: italic;
+            color: #999;
+        }
+        
+        .tournament-player-name.pending-player[contenteditable="true"]:focus {
+            color: var(--color-text);
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tournoi Viewer</h1>
+        <div class="rank-indicator">
+            Multiplicateur à battre: <span id="eighthRank" class="rank-value">0.00</span>
+        </div>
+        <button id="sortButton" class="sort-button" onclick="sortTableByMulti()">Trier par multiplicateur ↓</button>
+        <table id="gainTable">
+            <tr>
+                <th>Pseudo</th>
+                <th>Slot</th>
+                <th>Gain</th>
+                <th>Multiplicateur</th>
+            </tr>
+            <script>
+                // Créer 15 lignes au lieu de 25 pour un aspect plus compact
+                for(let i = 0; i < 25; i++) {
+                    document.write(`
+                        <tr>
+                            <td><input type="text" class="pseudo" list="pseudo-list" placeholder="Pseudo"></td>
+                            <td><input type="text" class="slot" placeholder="Nom de la slot"></td>
+                            <td><input type="number" step="0.01" class="gain" oninput="calculateMulti(this)" placeholder="0.00"></td>
+                            <td><div class="multi"></div></td>
+                        </tr>
+                    `);
+                }
+
+                function calculateMulti(input) {
+                    const gain = parseFloat(input.value) || 0;
+                    const multi = (gain / 0.2).toFixed(2);
+                    const multiDiv = input.parentElement.nextElementSibling.querySelector('.multi');
+                    
+                    // Réinitialiser les classes
+                    multiDiv.className = "multi";
+                    multiDiv.textContent = multi;
+                    
+                    // Appliquer la classe en fonction de la valeur
+                    if (multi < 20) {
+                        multiDiv.classList.add("multi-low");
+                    } else if (multi < 70) {
+                        multiDiv.classList.add("multi-medium");
+                    } else if (multi < 200) {
+                        multiDiv.classList.add("multi-good");
+                    } else {
+                        multiDiv.classList.add("multi-excellent");
+                    }
+                    
+                    // Mettre à jour le 8ème meilleur multiplicateur
+                    updateEighthRank();
+                }
+                
+                function updateEighthRank() {
+                    // Collecter tous les multiplicateurs
+                    const allMultis = [];
+                    document.querySelectorAll('.multi').forEach(element => {
+                        const value = parseFloat(element.textContent);
+                        if (!isNaN(value) && value > 0) {
+                            allMultis.push({
+                                value: value,
+                                element: element
+                            });
+                        }
+                    });
+                    
+                    // Trier par ordre décroissant
+                    allMultis.sort((a, b) => b.value - a.value);
+                    
+                    // Supprimer les highlighting précédents
+                    document.querySelectorAll('.multi').forEach(el => {
+                        el.parentElement.classList.remove('highlight');
+                    });
+                    
+                    // Mettre à jour l'affichage du 8ème rang
+                    const eighthRankElement = document.getElementById('eighthRank');
+                    
+                    if (allMultis.length >= 8) {
+                        const eighthRank = allMultis[7].value;
+                        eighthRankElement.textContent = eighthRank.toFixed(2);
+                        
+                        // Mettre en évidence le 8ème multiplicateur
+                        allMultis[7].element.parentElement.classList.add('highlight');
+                    } else {
+                        eighthRankElement.textContent = "N/A (besoin de 8 valeurs)";
+                    }
+                }
+                
+                function sortTableByMulti() {
+                    const table = document.getElementById('gainTable');
+                    const rows = Array.from(table.rows).slice(1); // Ignorer l'en-tête
+                    
+                    // Trier les lignes
+                    rows.sort((rowA, rowB) => {
+                        const multiA = parseFloat(rowA.cells[3].querySelector('.multi').textContent) || 0;
+                        const multiB = parseFloat(rowB.cells[3].querySelector('.multi').textContent) || 0;
+                        return multiB - multiA; // Ordre décroissant
+                    });
+                    
+                    // Réorganiser les lignes dans le tableau
+                    rows.forEach(row => {
+                        table.appendChild(row);
+                    });
+                    
+                    // Mettre à jour l'affichage du 8ème rang
+                    updateEighthRank();
+                }
+            </script>
+        </table>
+    </div>
+    
+    <!-- Arbre de tournoi -->
+    <div class="tournament-container">
+        <h1>PHASE FINALE</h1>
+        <div class="tournament-section">
+            <div class="button-container">
+                <button id="updateBracket" class="update-bracket-button" onclick="initializeTournament()">AFFICHER LE TOP 8</button>
+                <button class="reset-button" onclick="clearSavedData()">REINITIALISER LE TOURNOI</button>
+            </div>
+            
+            <div class="tournament-phases">
+                <div class="tournament-phase">Quarts de finale</div>
+                <div class="tournament-phase">Demi-finales</div>
+                <div class="tournament-phase">Finale</div>
+                <div class="tournament-phase">Vainqueur</div>
+            </div>
+            
+            <div class="tournament-tree">
+                <div class="tournament-bracket">
+                    <!-- Quarts de finale -->
+                    <div class="tournament-round">
+                        <div class="tournament-match" id="quarter1">
+                            <div class="tournament-player" id="player1">
+                                <div class="tournament-player-header">
+                                    <span class="tournament-player-name">Joueur 1</span>
+                                    <span class="tournament-multi" style="background-color: #e74c3c;">0.00</span>
+                                </div>
+                                <div class="tournament-player-details">
+                                    <div class="tournament-slot">
+                                        <span class="tournament-label">Slot:</span>
+                                        <input type="text" class="tournament-input slot-input" placeholder="Nom de la slot">
+                                    </div>
+                                    <div class="tournament-gain">
+                                        <span class="tournament-label">Gain:</span>
+                                        <input type="number" step="0.01" class="tournament-input gain-input" placeholder="0.00" oninput="autoCalculateMatch(this, 'quarter1', 'semi1', 0)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tournament-player" id="player2">
+                                <div class="tournament-player-header">
+                                    <span class="tournament-player-name">Joueur 2</span>
+                                    <span class="tournament-multi" style="background-color: #e74c3c;">0.00</span>
+                                </div>
+                                <div class="tournament-player-details">
+                                    <div class="tournament-slot">
+                                        <span class="tournament-label">Slot:</span>
+                                        <input type="text" class="tournament-input slot-input" placeholder="Nom de la slot">
+                                    </div>
+                                    <div class="tournament-gain">
+                                        <span class="tournament-label">Gain:</span>
+                                        <input type="number" step="0.01" class="tournament-input gain-input" placeholder="0.00" oninput="autoCalculateMatch(this, 'quarter2', 'semi1', 1)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tournament-match" id="quarter2">
+                            <div class="tournament-player" id="player3">
+                                <div class="tournament-player-header">
+                                    <span class="tournament-player-name">Joueur 3</span>
+                                    <span class="tournament-multi" style="background-color: #e74c3c;">0.00</span>
+                                </div>
+                                <div class="tournament-player-details">
+                                    <div class="tournament-slot">
+                                        <span class="tournament-label">Slot:</span>
+                                        <input type="text" class="tournament-input slot-input" placeholder="Nom de la slot">
+                                    </div>
+                                    <div class="tournament-gain">
+                                        <span class="tournament-label">Gain:</span>
+                                        <input type="number" step="0.01" class="tournament-input gain-input" placeholder="0.00" oninput="autoCalculateMatch(this, 'quarter3', 'semi2', 0)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tournament-player" id="player4">
+                                <div class="tournament-player-header">
+                                    <span class="tournament-player-name">Joueur 4</span>
+                                    <span class="tournament-multi" style="background-color: #e74c3c;">0.00</span>
+                                </div>
+                                <div class="tournament-player-details">
+                                    <div class="tournament-slot">
+                                        <span class="tournament-label">Slot:</span>
+                                        <input type="text" class="tournament-input slot-input" placeholder="Nom de la slot">
+                                    </div>
+                                    <div class="tournament-gain">
+                                        <span class="tournament-label">Gain:</span>
+                                        <input type="number" step="0.01" class="tournament-input gain-input" placeholder="0.00" oninput="autoCalculateMatch(this, 'quarter4', 'semi2', 1)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tournament-match" id="quarter3">
+                            <div class="tournament-player" id="player5">
+                                <div class="tournament-player-header">
+                                    <span class="tournament-player-name">Joueur 5</span>
+                                    <span class="tournament-multi" style="background-color: #e74c3c;">0.00</span>
+                                </div>
+                                <div class="tournament-player-details">
+                                    <div class="tournament-slot">
+                                        <span class="tournament-label">Slot:</span>
+                                        <input type="text" class="tournament-input slot-input" placeholder="Nom de la slot">
+                                    </div>
+                                    <div class="tournament-gain">
+                                        <span class="tournament-label">Gain:</span>
+                                        <input type="number" step="0.01" class="tournament-input gain-input" placeholder="0.00" oninput="autoCalculateMatch(this, 'quarter3', 'semi2', 0)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tournament-player" id="player6">
+                                <div class="tournament-player-header">
+                                    <span class="tournament-player-name">Joueur 6</span>
+                                    <span class="tournament-multi" style="background-color: #e74c3c;">0.00</span>
+                                </div>
+                                <div class="tournament-player-details">
+                                    <div class="tournament-slot">
+                                        <span class="tournament-label">Slot:</span>
+                                        <input type="text" class="tournament-input slot-input" placeholder="Nom de la slot">
+                                    </div>
+                                    <div class="tournament-gain">
+                                        <span class="tournament-label">Gain:</span>
+                                        <input type="number" step="0.01" class="tournament-input gain-input" placeholder="0.00" oninput="autoCalculateMatch(this, 'quarter3', 'semi2', 0)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tournament-match" id="quarter4">
+                            <div class="tournament-player" id="player7">
+                                <div class="tournament-player-header">
+                                    <span class="tournament-player-name">Joueur 7</span>
+                                    <span class="tournament-multi" style="background-color: #e74c3c;">0.00</span>
+                                </div>
+                                <div class="tournament-player-details">
+                                    <div class="tournament-slot">
+                                        <span class="tournament-label">Slot:</span>
+                                        <input type="text" class="tournament-input slot-input" placeholder="Nom de la slot">
+                                    </div>
+                                    <div class="tournament-gain">
+                                        <span class="tournament-label">Gain:</span>
+                                        <input type="number" step="0.01" class="tournament-input gain-input" placeholder="0.00" oninput="autoCalculateMatch(this, 'quarter4', 'semi2', 1)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tournament-player" id="player8">
+                                <div class="tournament-player-header">
+                                    <span class="tournament-player-name">Joueur 8</span>
+                                    <span class="tournament-multi" style="background-color: #e74c3c;">0.00</span>
+                                </div>
+                                <div class="tournament-player-details">
+                                    <div class="tournament-slot">
+                                        <span class="tournament-label">Slot:</span>
+                                        <input type="text" class="tournament-input slot-input" placeholder="Nom de la slot">
+                                    </div>
+                                    <div class="tournament-gain">
+                                        <span class="tournament-label">Gain:</span>
+                                        <input type="number" step="0.01" class="tournament-input gain-input" placeholder="0.00" oninput="autoCalculateMatch(this, 'quarter4', 'semi2', 1)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Demi-finales -->
+                    <div class="tournament-round">
+                        <div class="tournament-match" id="semi1" style="margin-top: 75px;">
+                            <div class="tournament-player" id="semi-player1">
+                                <div class="tournament-player-header">
+                                    <span class="tournament-player-name pending-player">À déterminer</span>
+                                    <span class="tournament-multi" style="background-color: #999;">--</span>
+                                </div>
+                                <div class="tournament-player-details">
+                                    <div class="tournament-slot">
+                                        <span class="tournament-label">Slot:</span>
+                                        <input type="text" class="tournament-input slot-input" placeholder="Nom de la slot">
+                                    </div>
+                                    <div class="tournament-gain">
+                                        <span class="tournament-label">Gain:</span>
+                                        <input type="number" step="0.01" class="tournament-input gain-input" placeholder="0.00" oninput="autoCalculateMatch(this, 'semi1', 'final', 0)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tournament-player" id="semi-player2">
+                                <div class="tournament-player-header">
+                                    <span class="tournament-player-name pending-player">À déterminer</span>
+                                    <span class="tournament-multi" style="background-color: #999;">--</span>
+                                </div>
+                                <div class="tournament-player-details">
+                                    <div class="tournament-slot">
+                                        <span class="tournament-label">Slot:</span>
+                                        <input type="text" class="tournament-input slot-input" placeholder="Nom de la slot">
+                                    </div>
+                                    <div class="tournament-gain">
+                                        <span class="tournament-label">Gain:</span>
+                                        <input type="number" step="0.01" class="tournament-input gain-input" placeholder="0.00" oninput="autoCalculateMatch(this, 'semi1', 'final', 0)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tournament-match" id="semi2" style="margin-top: 150px;">
+                            <div class="tournament-player" id="semi-player3">
+                                <div class="tournament-player-header">
+                                    <span class="tournament-player-name pending-player">À déterminer</span>
+                                    <span class="tournament-multi" style="background-color: #999;">--</span>
+                                </div>
+                                <div class="tournament-player-details">
+                                    <div class="tournament-slot">
+                                        <span class="tournament-label">Slot:</span>
+                                        <input type="text" class="tournament-input slot-input" placeholder="Nom de la slot">
+                                    </div>
+                                    <div class="tournament-gain">
+                                        <span class="tournament-label">Gain:</span>
+                                        <input type="number" step="0.01" class="tournament-input gain-input" placeholder="0.00" oninput="autoCalculateMatch(this, 'semi2', 'final', 1)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tournament-player" id="semi-player4">
+                                <div class="tournament-player-header">
+                                    <span class="tournament-player-name pending-player">À déterminer</span>
+                                    <span class="tournament-multi" style="background-color: #999;">--</span>
+                                </div>
+                                <div class="tournament-player-details">
+                                    <div class="tournament-slot">
+                                        <span class="tournament-label">Slot:</span>
+                                        <input type="text" class="tournament-input slot-input" placeholder="Nom de la slot">
+                                    </div>
+                                    <div class="tournament-gain">
+                                        <span class="tournament-label">Gain:</span>
+                                        <input type="number" step="0.01" class="tournament-input gain-input" placeholder="0.00" oninput="autoCalculateMatch(this, 'final', 'winner', 0)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Finale -->
+                    <div class="tournament-round">
+                        <div class="tournament-match" id="final" style="margin-top: 225px;">
+                            <div class="tournament-player" id="final-player1">
+                                <div class="tournament-player-header">
+                                    <span class="tournament-player-name pending-player">À déterminer</span>
+                                    <span class="tournament-multi" style="background-color: #999;">--</span>
+                                </div>
+                                <div class="tournament-player-details">
+                                    <div class="tournament-slot">
+                                        <span class="tournament-label">Slot:</span>
+                                        <input type="text" class="tournament-input slot-input" placeholder="Nom de la slot">
+                                    </div>
+                                    <div class="tournament-gain">
+                                        <span class="tournament-label">Gain:</span>
+                                        <input type="number" step="0.01" class="tournament-input gain-input" placeholder="0.00" oninput="autoCalculateMatch(this, 'final', 'winner', 0)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tournament-player" id="final-player2">
+                                <div class="tournament-player-header">
+                                    <span class="tournament-player-name pending-player">À déterminer</span>
+                                    <span class="tournament-multi" style="background-color: #999;">--</span>
+                                </div>
+                                <div class="tournament-player-details">
+                                    <div class="tournament-slot">
+                                        <span class="tournament-label">Slot:</span>
+                                        <input type="text" class="tournament-input slot-input" placeholder="Nom de la slot">
+                                    </div>
+                                    <div class="tournament-gain">
+                                        <span class="tournament-label">Gain:</span>
+                                        <input type="number" step="0.01" class="tournament-input gain-input" placeholder="0.00" oninput="autoCalculateMatch(this, 'final', 'winner', 0)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Vainqueur -->
+                    <div class="tournament-round">
+                        <div class="tournament-match winner-match" id="winner" style="margin-top: 275px;">
+                            <div class="tournament-player tournament-winner" id="tournament-winner">
+                                <div class="tournament-player-header">
+                                    <span class="tournament-player-name pending-player">Champion</span><span class="trophy-icon">🏆</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Connecteurs pour visualiser les liens entre les matches -->
+                <div class="tournament-connectors">
+                    <!-- Ces éléments seront dessinés par JavaScript pour s'adapter à la disposition -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Datalist pour les suggestions de pseudos -->
+    <datalist id="pseudo-list">
+        <option value="xdr_sherminator"></option>
+        <option value="xdr_jedispin53"></option>
+        <option value="xdr_asuna"></option>
+        <option value="docteurv"></option>
+        <option value="xdr_papatrun9135"></option>
+        <option value="xioniix_tv"></option>
+        <option value="xdr_beni39"></option>
+        <option value="xdr_vivi88"></option>
+        <option value="mvs_destrutwitch67"></option>
+        <option value="timoragnar"></option>
+        <option value="poukeweed"></option>
+        <option value="xdrjeromelechtimi"></option>
+        <option value="dinoooo54"></option>
+        <option value="xdr_andydu54"></option>
+        <option value="iamalic0rne"></option>
+        <option value="xdr_lezouavesn1"></option>
+        <option value="jako57500"></option>
+        <option value="ho_yeahhhhhh"></option>
+        <option value="jeremd7"></option>
+        <option value="xdr_flo_shelby"></option>
+        <option value="xdr_bigoud766"></option>
+        <option value="dudu50100"></option>
+        <option value="sogameuse"></option>
+        <option value="leobrizou"></option>
+        <option value="xdr_lecoach__"></option>
+        <option value="xdr_bl4ckk"></option>
+        <option value="slasherg6"></option>
+        <option value="consumed83"></option>
+        <option value="panda61800"></option>
+        <option value="cdrc35"></option>
+        <option value="pierrodu42400"></option>
+        <option value="xdr_rider13"></option>
+        <option value="xdr_leptikir"></option>
+        <option value="xdr_tenzaa"></option>
+        <option value="nesquik_nsk"></option>
+        <option value="richemonts"></option>
+        <option value="xdr_tatasimone64"></option>
+        <option value="xdr_ddk"></option>
+        <option value="manylebidou"></option>
+        <option value="mg_antho77"></option>
+        <option value="cptnaltir"></option>
+        <option value="idonkairrr"></option>
+        <option value="markzynk"></option>
+        <option value="narkkotic62"></option>
+        <option value="escanouney"></option>
+        <option value="hirrow"></option>
+        <option value="xdr_habbibbii"></option>
+        <option value="massie666"></option>
+        <option value="shivaa83"></option>
+        <option value="jejelol067"></option>
+        <option value="clipperark"></option>
+        <option value="frromain"></option>
+        <option value="pinocchiooooooo"></option>
+        <option value="kywaz"></option>
+        <option value="xdr_juna_mela"></option>
+        <option value="raton_stephanie2010"></option>
+        <option value="livyatan88"></option>
+        <option value="tvpscorpion"></option>
+        <option value="blubludublu"></option>
+        <option value="stephanedtc"></option>
+        <option value="lafoxe"></option>
+        <option value="xdr_nox"></option>
+        <option value="xdr_lagriffe76730"></option>
+        <option value="xdr_celine72220"></option>
+        <option value="xdr_abby"></option>
+        <option value="chrizz_matheo"></option>
+        <option value="overdozzetv"></option>
+        <option value="alexandr_0211"></option>
+        <option value="xdr_steevilekiwi"></option>
+        <option value="xdr_dragounex"></option>
+        <option value="sachaskel"></option>
+        <option value="haeko77"></option>
+        <option value="miloshaka"></option>
+        <option value="selyzia"></option>
+        <option value="pilpousse22"></option>
+        <option value="kdm_le10e"></option>
+        <option value="y0diee"></option>
+        <option value="glyver"></option>
+        <option value="nesiatv"></option>
+        <option value="momo27k"></option>
+        <option value="stylinski_"></option>
+        <option value="hadesjackbauer"></option>
+        <option value="petitpatapouff"></option>
+        <option value="chacha1521"></option>
+        <option value="jeeyce_"></option>
+        <option value="michaelxfe5rg"></option>
+        <option value="ninog20"></option>
+        <option value="aiekike"></option>
+        <option value="us4_ezzox_king"></option>
+        <option value="bluephoenixtv_"></option>
+        <option value="zorhoo"></option>
+        <option value="bubu____42"></option>
+        <option value="spykatra"></option>
+        <option value="munez17"></option>
+        <option value="yoann01560tb"></option>
+        <option value="styfleur88"></option>
+        <option value="xdr_maximedou"></option>
+        <option value="mariejsm"></option>
+        <option value="sambqa_"></option>
+        <option value="xdr_kerroy89"></option>
+        <option value="moooquette"></option>
+        <option value="xdr_gwem353"></option>
+        <option value="drezyy_69"></option>
+        <option value="zombieornot"></option>
+        <option value="david__84__"></option>
+        <option value="matroke1104"></option>
+        <option value="kyzersoze79"></option>
+        <option value="kevinweather76"></option>
+        <option value="lexouille7"></option>
+    </datalist>
+
+    <script>
+        function initializeTournament() {
+            // Collecter tous les joueurs avec leurs noms (sans tenir compte des multiplicateurs)
+            const players = [];
+            const rows = document.querySelectorAll('#gainTable tr:not(:first-child)');
+            
+            rows.forEach(row => {
+                const pseudoInput = row.querySelector('.pseudo');
+                const slotInput = row.querySelector('.slot');
+                
+                if (pseudoInput && pseudoInput.value) {
+                    players.push({
+                        name: pseudoInput.value,
+                        slot: slotInput ? slotInput.value : ''
+                    });
+                }
+            });
+            
+            // Vérifier s'il y a au moins 8 joueurs
+            if (players.length < 8) {
+                alert("Il faut au moins 8 joueurs avec des noms valides pour générer l'arbre de tournoi.");
+                return;
+            }
+            
+            // Prendre les 8 premiers joueurs (sans tri par multiplicateur)
+            const top8 = players.slice(0, 8);
+            
+            // Remplir les quarts de finale
+            for (let i = 0; i < 8; i++) {
+                const player = top8[i];
+                const playerElem = document.getElementById(`player${i+1}`);
+                const nameElem = playerElem.querySelector('.tournament-player-name');
+                const multiElem = playerElem.querySelector('.tournament-multi');
+                const slotInput = playerElem.querySelector('.slot-input');
+                
+                nameElem.textContent = player.name;
+                nameElem.classList.remove('pending-player');
+                multiElem.textContent = "0.00";
+                multiElem.style.backgroundColor = '#e74c3c';
+                
+                if (slotInput) {
+                    slotInput.value = player.slot;
+                }
+            }
+            
+            // Réinitialiser les demi-finales, la finale et le vainqueur
+            const resetPhases = ['semi-player1', 'semi-player2', 'semi-player3', 'semi-player4', 
+                               'final-player1', 'final-player2', 'tournament-winner'];
+            
+            resetPhases.forEach(id => {
+                const elem = document.getElementById(id);
+                const nameElem = elem.querySelector('.tournament-player-name');
+                const multiElem = elem.querySelector('.tournament-multi');
+                
+                if (nameElem) {
+                    nameElem.textContent = 'À déterminer';
+                    nameElem.classList.add('pending-player');
+                }
+                if (multiElem) {
+                    multiElem.textContent = '--';
+                    multiElem.style.backgroundColor = '#999';
+                }
+                
+                // Réinitialiser les inputs s'ils existent
+                const slotInput = elem.querySelector('.slot-input');
+                const gainInput = elem.querySelector('.gain-input');
+                
+                if (slotInput) slotInput.value = '';
+                if (gainInput) gainInput.value = '';
+                
+                // Supprimer la classe winner
+                elem.classList.remove('tournament-winner');
+            });
+            
+            // Réinitialiser le champion
+            const championElem = document.getElementById('tournament-winner');
+            const championName = championElem.querySelector('.tournament-player-name');
+            championName.textContent = 'Champion';
+            championName.classList.add('pending-player');
+        }
+        
+        function autoCalculateMatch(inputElement, currentMatchId, nextMatchId, nextPlayerIndex) {
+            const currentMatch = document.getElementById(currentMatchId);
+            const players = currentMatch.querySelectorAll('.tournament-player');
+            
+            if (players.length !== 2) return;
+            
+            // Déterminer si c'est la finale
+            const isFinalMatch = currentMatchId === 'final';
+            // Utiliser le diviseur approprié selon le type de match
+            const divisor = isFinalMatch ? 0.4 : 0.2;
+            
+            // Mettre à jour le multiplicateur pour le joueur qui a changé
+            const playerIndex = Array.from(players).findIndex(p => 
+                p.querySelector('.gain-input') === inputElement
+            );
+            
+            if (playerIndex !== -1) {
+                const player = players[playerIndex];
+                const gain = parseFloat(inputElement.value) || 0;
+                const multi = (gain / divisor).toFixed(2);
+                const multiElem = player.querySelector('.tournament-multi');
+                
+                // Mettre à jour le multiplicateur
+                multiElem.textContent = multi;
+                
+                // Mettre à jour la couleur en fonction de la valeur
+                let bgColor;
+                if (multi < 20) {
+                    bgColor = '#e74c3c';
+                } else if (multi < 70) {
+                    bgColor = '#f39c12';
+                } else if (multi < 100) {
+                    bgColor = '#2ecc71';
+                } else {
+                    bgColor = '#8e44ad';
+                }
+                multiElem.style.backgroundColor = bgColor;
+            }
+            
+            // Récupérer les valeurs des joueurs
+            const player1 = {
+                name: players[0].querySelector('.tournament-player-name').textContent,
+                gain: parseFloat(players[0].querySelector('.gain-input').value) || 0,
+                slot: players[0].querySelector('.slot-input').value
+            };
+            
+            const player2 = {
+                name: players[1].querySelector('.tournament-player-name').textContent,
+                gain: parseFloat(players[1].querySelector('.gain-input').value) || 0,
+                slot: players[1].querySelector('.slot-input').value
+            };
+            
+            // Vérifier que les deux joueurs ont des gains valides
+            if (player1.gain <= 0 || player2.gain <= 0) {
+                return; // Ne pas calculer si l'un des gains n'est pas valide
+            }
+            
+            // Calculer les multiplicateurs avec le bon diviseur
+            const multi1 = (player1.gain / divisor).toFixed(2);
+            const multi2 = (player2.gain / divisor).toFixed(2);
+            
+            // Mettre à jour les affichages des multiplicateurs
+            players[0].querySelector('.tournament-multi').textContent = multi1;
+            players[1].querySelector('.tournament-multi').textContent = multi2;
+            
+            // Déterminer la couleur pour chaque multiplicateur
+            players.forEach((p, idx) => {
+                const multi = idx === 0 ? multi1 : multi2;
+                const multiElem = p.querySelector('.tournament-multi');
+                
+                let bgColor;
+                if (multi < 20) {
+                    bgColor = '#e74c3c';
+                } else if (multi < 70) {
+                    bgColor = '#f39c12';
+                } else if (multi < 100) {
+                    bgColor = '#2ecc71';
+                } else {
+                    bgColor = '#8e44ad';
+                }
+                multiElem.style.backgroundColor = bgColor;
+            });
+            
+            // Déterminer le gagnant
+            const winner = parseFloat(multi1) > parseFloat(multi2) ? 0 : 1;
+            
+            // Mettre en évidence le gagnant
+            players.forEach((p, idx) => {
+                if (idx === winner) {
+                    p.classList.add('tournament-winner');
+                } else {
+                    p.classList.remove('tournament-winner');
+                }
+            });
+            
+            // Passer le gagnant à la prochaine étape
+            if (nextMatchId) {
+                const nextMatch = document.getElementById(nextMatchId);
+                if (!nextMatch) return;
+                
+                const nextPlayerElem = nextMatch.querySelectorAll('.tournament-player')[nextPlayerIndex];
+                if (!nextPlayerElem) return;
+                
+                const winnerData = winner === 0 ? 
+                    { name: player1.name } : 
+                    { name: player2.name };
+                
+                // Mettre à jour le joueur dans la prochaine étape
+                const nextNameElem = nextPlayerElem.querySelector('.tournament-player-name');
+                const nextMultiElem = nextPlayerElem.querySelector('.tournament-multi');
+                const nextSlotInput = nextPlayerElem.querySelector('.slot-input');
+                const nextGainInput = nextPlayerElem.querySelector('.gain-input');
+                
+                // Définir le nom du joueur mais réinitialiser les autres champs
+                nextNameElem.textContent = winnerData.name;
+                nextNameElem.classList.remove('pending-player');
+                
+                // Réinitialiser le multiplicateur
+                nextMultiElem.textContent = '--';
+                nextMultiElem.style.backgroundColor = '#999';
+                
+                // Vider les champs slot et gain
+                if (nextSlotInput) nextSlotInput.value = '';
+                if (nextGainInput) nextGainInput.value = '';
+            }
+            
+            console.log(`Match ${currentMatchId} calculé: ${player1.name} (${multi1}) vs ${player2.name} (${multi2}). Gagnant: ${winner === 0 ? player1.name : player2.name}`);
+        }
+        
+        // Fonction pour initialiser les event listeners sur tous les champs de gain
+        function initializeMatchHandlers() {
+            // Quarts de finale
+            document.querySelector('#quarter1 #player1 .gain-input').oninput = function() {
+                autoCalculateMatch(this, 'quarter1', 'semi1', 0);
+            };
+            document.querySelector('#quarter1 #player2 .gain-input').oninput = function() {
+                autoCalculateMatch(this, 'quarter1', 'semi1', 0);
+            };
+            
+            document.querySelector('#quarter2 #player3 .gain-input').oninput = function() {
+                autoCalculateMatch(this, 'quarter2', 'semi1', 1);
+            };
+            document.querySelector('#quarter2 #player4 .gain-input').oninput = function() {
+                autoCalculateMatch(this, 'quarter2', 'semi1', 1);
+            };
+            
+            document.querySelector('#quarter3 #player5 .gain-input').oninput = function() {
+                autoCalculateMatch(this, 'quarter3', 'semi2', 0);
+            };
+            document.querySelector('#quarter3 #player6 .gain-input').oninput = function() {
+                autoCalculateMatch(this, 'quarter3', 'semi2', 0);
+            };
+            
+            document.querySelector('#quarter4 #player7 .gain-input').oninput = function() {
+                autoCalculateMatch(this, 'quarter4', 'semi2', 1);
+            };
+            document.querySelector('#quarter4 #player8 .gain-input').oninput = function() {
+                autoCalculateMatch(this, 'quarter4', 'semi2', 1);
+            };
+            
+            // Demi-finales
+            document.querySelector('#semi1 #semi-player1 .gain-input').oninput = function() {
+                autoCalculateMatch(this, 'semi1', 'final', 0);
+            };
+            document.querySelector('#semi1 #semi-player2 .gain-input').oninput = function() {
+                autoCalculateMatch(this, 'semi1', 'final', 0);
+            };
+            
+            document.querySelector('#semi2 #semi-player3 .gain-input').oninput = function() {
+                autoCalculateMatch(this, 'semi2', 'final', 1);
+            };
+            document.querySelector('#semi2 #semi-player4 .gain-input').oninput = function() {
+                autoCalculateMatch(this, 'semi2', 'final', 1);
+            };
+            
+            // Finale
+            document.querySelector('#final #final-player1 .gain-input').oninput = function() {
+                autoCalculateMatch(this, 'final', 'winner', 0);
+            };
+            document.querySelector('#final #final-player2 .gain-input').oninput = function() {
+                autoCalculateMatch(this, 'final', 'winner', 0);
+            };
+        }
+        
+        // Ajouter l'appel à initializeMatchHandlers après chargement de la page
+        window.addEventListener('load', function() {
+            initializeMatchHandlers();
+        });
+        
+        // Également initialiser les handlers après l'initialisation du tournoi
+        const oldInitTournament = initializeTournament;
+        initializeTournament = function() {
+            oldInitTournament();
+            setTimeout(initializeMatchHandlers, 100); // Attendre un peu que le DOM soit mis à jour
+        };
+        
+        // Fonction pour dessiner les connecteurs entre les matches
+        function drawConnectors() {
+            // Supprimé pour éviter les problèmes de connecteurs
+        }
+        
+        // Supprimer les event listeners pour éviter d'appeler drawConnectors
+        window.addEventListener('load', function() {
+            // Ne rien faire
+        });
+        
+        // Supprimer les event listeners de redimensionnement
+        window.removeEventListener('resize', drawConnectors);
+        
+        // Fonctions pour sauvegarder et restaurer les données
+        function saveTableData() {
+            const tableData = [];
+            const rows = document.querySelectorAll('#gainTable tr:not(:first-child)');
+            
+            rows.forEach(row => {
+                const pseudoInput = row.querySelector('.pseudo');
+                const slotInput = row.querySelector('.slot');
+                const gainInput = row.querySelector('.gain');
+                const multiDiv = row.querySelector('.multi');
+                
+                if (pseudoInput) {
+                    tableData.push({
+                        pseudo: pseudoInput.value,
+                        slot: slotInput ? slotInput.value : '',
+                        gain: gainInput ? gainInput.value : '',
+                        multi: multiDiv ? multiDiv.textContent : ''
+                    });
+                }
+            });
+            
+            localStorage.setItem('tournamentTableData', JSON.stringify(tableData));
+        }
+        
+        function saveTournamentData() {
+            const tournamentData = {
+                quarters: [],
+                semis: [],
+                final: [],
+                winner: {}
+            };
+            
+            // Sauvegarder les quarts de finale
+            for (let i = 1; i <= 8; i++) {
+                const playerElem = document.getElementById(`player${i}`);
+                if (playerElem) {
+                    const nameElem = playerElem.querySelector('.tournament-player-name');
+                    const multiElem = playerElem.querySelector('.tournament-multi');
+                    const slotInput = playerElem.querySelector('.slot-input');
+                    const gainInput = playerElem.querySelector('.gain-input');
+                    
+                    tournamentData.quarters.push({
+                        name: nameElem ? nameElem.textContent : '',
+                        multi: multiElem ? multiElem.textContent : '',
+                        multiColor: multiElem ? multiElem.style.backgroundColor : '',
+                        slot: slotInput ? slotInput.value : '',
+                        gain: gainInput ? gainInput.value : '',
+                        winner: playerElem.classList.contains('tournament-winner')
+                    });
+                }
+            }
+            
+            // Sauvegarder les demi-finales
+            for (let i = 1; i <= 4; i++) {
+                const playerElem = document.getElementById(`semi-player${i}`);
+                if (playerElem) {
+                    const nameElem = playerElem.querySelector('.tournament-player-name');
+                    const multiElem = playerElem.querySelector('.tournament-multi');
+                    const slotInput = playerElem.querySelector('.slot-input');
+                    const gainInput = playerElem.querySelector('.gain-input');
+                    
+                    tournamentData.semis.push({
+                        name: nameElem ? nameElem.textContent : '',
+                        multi: multiElem ? multiElem.textContent : '',
+                        multiColor: multiElem ? multiElem.style.backgroundColor : '',
+                        slot: slotInput ? slotInput.value : '',
+                        gain: gainInput ? gainInput.value : '',
+                        winner: playerElem.classList.contains('tournament-winner'),
+                        isPending: nameElem ? nameElem.classList.contains('pending-player') : true
+                    });
+                }
+            }
+            
+            // Sauvegarder la finale
+            for (let i = 1; i <= 2; i++) {
+                const playerElem = document.getElementById(`final-player${i}`);
+                if (playerElem) {
+                    const nameElem = playerElem.querySelector('.tournament-player-name');
+                    const multiElem = playerElem.querySelector('.tournament-multi');
+                    const slotInput = playerElem.querySelector('.slot-input');
+                    const gainInput = playerElem.querySelector('.gain-input');
+                    
+                    tournamentData.final.push({
+                        name: nameElem ? nameElem.textContent : '',
+                        multi: multiElem ? multiElem.textContent : '',
+                        multiColor: multiElem ? multiElem.style.backgroundColor : '',
+                        slot: slotInput ? slotInput.value : '',
+                        gain: gainInput ? gainInput.value : '',
+                        winner: playerElem.classList.contains('tournament-winner'),
+                        isPending: nameElem ? nameElem.classList.contains('pending-player') : true
+                    });
+                }
+            }
+            
+            // Sauvegarder le vainqueur
+            const winnerElem = document.getElementById('tournament-winner');
+            if (winnerElem) {
+                const nameElem = winnerElem.querySelector('.tournament-player-name');
+                tournamentData.winner = {
+                    name: nameElem ? nameElem.textContent : '',
+                    isPending: nameElem ? nameElem.classList.contains('pending-player') : true
+                };
+            }
+            
+            localStorage.setItem('tournamentBracketData', JSON.stringify(tournamentData));
+        }
+        
+        function saveAllData() {
+            saveTableData();
+            saveTournamentData();
+        }
+        
+        function restoreTableData() {
+            const savedData = localStorage.getItem('tournamentTableData');
+            if (!savedData) return;
+            
+            try {
+                const tableData = JSON.parse(savedData);
+                const rows = document.querySelectorAll('#gainTable tr:not(:first-child)');
+                
+                for (let i = 0; i < Math.min(tableData.length, rows.length); i++) {
+                    const row = rows[i];
+                    const data = tableData[i];
+                    
+                    const pseudoInput = row.querySelector('.pseudo');
+                    const slotInput = row.querySelector('.slot');
+                    const gainInput = row.querySelector('.gain');
+                    
+                    if (pseudoInput && data.pseudo) pseudoInput.value = data.pseudo;
+                    if (slotInput && data.slot) slotInput.value = data.slot;
+                    if (gainInput && data.gain) {
+                        gainInput.value = data.gain;
+                        // Déclencher le calcul du multiplicateur
+                        calculateMulti(gainInput);
+                    }
+                }
+            } catch (e) {
+                console.error('Erreur lors de la restauration des données du tableau:', e);
+            }
+        }
+        
+        function restoreTournamentData() {
+            const savedData = localStorage.getItem('tournamentBracketData');
+            if (!savedData) return;
+            
+            try {
+                const tournamentData = JSON.parse(savedData);
+                
+                // Restaurer les quarts de finale
+                for (let i = 0; i < tournamentData.quarters.length && i < 8; i++) {
+                    const data = tournamentData.quarters[i];
+                    const playerElem = document.getElementById(`player${i+1}`);
+                    
+                    if (playerElem) {
+                        const nameElem = playerElem.querySelector('.tournament-player-name');
+                        const multiElem = playerElem.querySelector('.tournament-multi');
+                        const slotInput = playerElem.querySelector('.slot-input');
+                        const gainInput = playerElem.querySelector('.gain-input');
+                        
+                        if (nameElem && data.name) {
+                            nameElem.textContent = data.name;
+                            nameElem.classList.remove('pending-player');
+                        }
+                        
+                        if (multiElem && data.multi) {
+                            multiElem.textContent = data.multi;
+                            if (data.multiColor) multiElem.style.backgroundColor = data.multiColor;
+                        }
+                        
+                        if (slotInput && data.slot) slotInput.value = data.slot;
+                        if (gainInput && data.gain) gainInput.value = data.gain;
+                        
+                        if (data.winner) {
+                            playerElem.classList.add('tournament-winner');
+                        } else {
+                            playerElem.classList.remove('tournament-winner');
+                        }
+                    }
+                }
+                
+                // Restaurer les demi-finales
+                for (let i = 0; i < tournamentData.semis.length && i < 4; i++) {
+                    const data = tournamentData.semis[i];
+                    const playerElem = document.getElementById(`semi-player${i+1}`);
+                    
+                    if (playerElem) {
+                        const nameElem = playerElem.querySelector('.tournament-player-name');
+                        const multiElem = playerElem.querySelector('.tournament-multi');
+                        const slotInput = playerElem.querySelector('.slot-input');
+                        const gainInput = playerElem.querySelector('.gain-input');
+                        
+                        if (nameElem && data.name) {
+                            nameElem.textContent = data.name;
+                            if (!data.isPending) nameElem.classList.remove('pending-player');
+                        }
+                        
+                        if (multiElem && data.multi) {
+                            multiElem.textContent = data.multi;
+                            if (data.multiColor) multiElem.style.backgroundColor = data.multiColor;
+                        }
+                        
+                        if (slotInput && data.slot) slotInput.value = data.slot;
+                        if (gainInput && data.gain) gainInput.value = data.gain;
+                        
+                        if (data.winner) {
+                            playerElem.classList.add('tournament-winner');
+                        } else {
+                            playerElem.classList.remove('tournament-winner');
+                        }
+                    }
+                }
+                
+                // Restaurer la finale
+                for (let i = 0; i < tournamentData.final.length && i < 2; i++) {
+                    const data = tournamentData.final[i];
+                    const playerElem = document.getElementById(`final-player${i+1}`);
+                    
+                    if (playerElem) {
+                        const nameElem = playerElem.querySelector('.tournament-player-name');
+                        const multiElem = playerElem.querySelector('.tournament-multi');
+                        const slotInput = playerElem.querySelector('.slot-input');
+                        const gainInput = playerElem.querySelector('.gain-input');
+                        
+                        if (nameElem && data.name) {
+                            nameElem.textContent = data.name;
+                            if (!data.isPending) nameElem.classList.remove('pending-player');
+                        }
+                        
+                        if (multiElem && data.multi) {
+                            multiElem.textContent = data.multi;
+                            if (data.multiColor) multiElem.style.backgroundColor = data.multiColor;
+                        }
+                        
+                        if (slotInput && data.slot) slotInput.value = data.slot;
+                        if (gainInput && data.gain) gainInput.value = data.gain;
+                        
+                        if (data.winner) {
+                            playerElem.classList.add('tournament-winner');
+                        } else {
+                            playerElem.classList.remove('tournament-winner');
+                        }
+                    }
+                }
+                
+                // Restaurer le vainqueur
+                const winnerData = tournamentData.winner;
+                const winnerElem = document.getElementById('tournament-winner');
+                
+                if (winnerElem && winnerData) {
+                    const nameElem = winnerElem.querySelector('.tournament-player-name');
+                    
+                    if (nameElem && winnerData.name) {
+                        nameElem.textContent = winnerData.name;
+                        if (!winnerData.isPending) nameElem.classList.remove('pending-player');
+                    }
+                }
+                
+            } catch (e) {
+                console.error('Erreur lors de la restauration des données du tournoi:', e);
+            }
+        }
+        
+        // Ajouter des event listeners pour la sauvegarde automatique
+        function setupAutoSave() {
+            // Sauvegarder lorsque des entrées dans le tableau sont modifiées
+            document.querySelectorAll('#gainTable input').forEach(input => {
+                input.addEventListener('change', saveAllData);
+                input.addEventListener('blur', saveAllData);
+            });
+            
+            // Sauvegarder lorsque des entrées dans le tournoi sont modifiées
+            document.querySelectorAll('.tournament-input').forEach(input => {
+                input.addEventListener('change', saveAllData);
+                input.addEventListener('blur', saveAllData);
+            });
+        }
+        
+        // Modifier la fonction calculateMulti pour sauvegarder après calcul
+        const originalCalculateMulti = calculateMulti;
+        calculateMulti = function(input) {
+            originalCalculateMulti(input);
+            saveAllData();
+        };
+        
+        // Modifier la fonction autoCalculateMatch pour sauvegarder après calcul
+        const originalAutoCalculateMatch = autoCalculateMatch;
+        autoCalculateMatch = function(inputElement, currentMatchId, nextMatchId, nextPlayerIndex) {
+            originalAutoCalculateMatch(inputElement, currentMatchId, nextMatchId, nextPlayerIndex);
+            saveAllData();
+        };
+        
+        // Modifier la fonction initializeTournament pour sauvegarder après initialisation
+        const originalInitTournament = initializeTournament;
+        initializeTournament = function() {
+            originalInitTournament();
+            saveAllData();
+        };
+        
+        // Charger les données lors du chargement de la page
+        window.addEventListener('load', function() {
+            restoreTableData();
+            restoreTournamentData();
+            setupAutoSave();
+            initializeMatchHandlers();
+        });
+        
+        // Fonction pour effacer toutes les données sauvegardées
+        function clearSavedData() {
+            if (confirm("Êtes-vous sûr de vouloir effacer toutes les données sauvegardées ?")) {
+                localStorage.removeItem('tournamentTableData');
+                localStorage.removeItem('tournamentBracketData');
+                location.reload();
+            }
+        }
+        
+        // Ajouter le lien vers la datalist pour les champs de saisie du tournoi
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ajouter l'attribut list aux champs de saisie de pseudo dans l'arbre du tournoi
+            const tournamentPlayerNames = document.querySelectorAll('.tournament-player-name');
+            tournamentPlayerNames.forEach(playerName => {
+                playerName.setAttribute('contenteditable', 'true');
+                playerName.setAttribute('data-list', 'pseudo-list');
+                
+                // Ajouter un événement input pour simuler la datalist pour les éléments contenteditable
+                playerName.addEventListener('input', function() {
+                    const inputVal = this.textContent.toLowerCase();
+                    if (inputVal.length < 2) return; // Ne pas suggérer si moins de 2 caractères
+                    
+                    // Chercher dans la liste des options
+                    const options = document.querySelectorAll('#pseudo-list option');
+                    let matchFound = false;
+                    
+                    for (let i = 0; i < options.length; i++) {
+                        const optionValue = options[i].value.toLowerCase();
+                        if (optionValue.startsWith(inputVal)) {
+                            // Si correspondance, remplir le reste du texte et le sélectionner
+                            this.textContent = options[i].value;
+                            
+                            // Placer le curseur à la fin du texte
+                            const range = document.createRange();
+                            const sel = window.getSelection();
+                            range.setStart(this.childNodes[0], inputVal.length);
+                            range.setEnd(this.childNodes[0], this.textContent.length);
+                            sel.removeAllRanges();
+                            sel.addRange(range);
+                            
+                            matchFound = true;
+                            break;
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
