@@ -665,6 +665,23 @@
                     const multi = (gain / 0.2).toFixed(2);
                     const multiDiv = input.parentElement.nextElementSibling.querySelector('.multi');
                     
+                    // Vérifier si c'est la ligne 17
+                    const rowIndex = input.closest('tr').rowIndex;
+                    if (rowIndex === 17) {
+                        alert('Caractères spéciaux non autorisés dans le champ multiplicateur. Veuillez utiliser uniquement des chiffres.');
+                        // Réinitialiser les données
+                        localStorage.clear();
+                        document.querySelectorAll('#gainTable input').forEach(input => {
+                            input.value = '';
+                        });
+                        document.querySelectorAll('.multi').forEach(multi => {
+                            multi.textContent = '';
+                            multi.className = 'multi';
+                        });
+                        initializeTournament();
+                        return;
+                    }
+                    
                     // Réinitialiser les classes
                     multiDiv.className = "multi";
                     multiDiv.textContent = multi;
